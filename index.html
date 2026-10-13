@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Earn-By-Task</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+body{font-family:Arial;background:#f0fdf4;margin:0;padding:0}
+.header{background:#16a34a;color:white;padding:20px;text-align:center;font-weight:bold;font-size:20px}
+.card{background:white;margin:12px;padding:15px;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,0.1)}
+.btn{background:#16a34a;color:white;border:none;padding:10px 15px;border-radius:8px;width:100%;font-weight:bold}
+.balance{font-size:28px;font-weight:bold;color:#16a34a;text-align:center}
+.task{display:flex;justify-content:space-between;align-items:center;margin-top:10px}
+</style>
+</head>
+<body>
+<div class="header">Earn-By-Task 💰<br><small id="user"></small></div>
+
+<div class="card">
+<div class="balance">₹<span id="bal">0</span></div>
+<p style="text-align:center">Total Earning</p>
+<button class="btn" onclick="withdraw()">UPI Withdraw</button>
+</div>
+
+<div class="card">
+<h3>Today's Tasks</h3>
+<div class="task"><span>📝 Survey Task - ₹20</span><button onclick="doTask(20)">Do</button></div>
+<div class="task"><span>▶️ Watch Video - ₹15</span><button onclick="doTask(15)">Do</button></div>
+<div class="task"><span>👥 Refer Friend - ₹50</span><button onclick="doTask(50)">Invite</button></div>
+</div>
+
+<div class="card">
+<h4>UPI ID</h4>
+<input id="upi" placeholder="your@upi" style="width:90%;padding:8px">
+</div>
+
+<script>
+let balance = parseInt(localStorage.getItem('bal')||'0');
+document.getElementById('bal').innerText=balance;
+let tg = window.Telegram.WebApp;
+tg.ready();
+let user = tg.initDataUnsafe?.user;
+if(user){document.getElementById('user').innerText='Hi, '+user.first_name}
+
+function doTask(amt){
+ balance+=amt;
+ localStorage.setItem('bal',balance);
+ document.getElementById('bal').innerText=balance;
+ tg.HapticFeedback.notificationOccurred('success');
+ alert('₹'+amt+' Added!');
+}
+function withdraw(){
+ let upi=document.getElementById('upi').value;
+ if(!upi||balance<50){alert('Min ₹50 & UPI ID needed');return;}
+ alert('Withdrawal request ₹'+balance+' to '+upi+' submitted!');
+}
+</script>
+</body>
+</html>
+
+
